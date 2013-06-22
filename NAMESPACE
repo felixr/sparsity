@@ -1,0 +1,4 @@
+export(read.svmlight)
+export(write.svmlight)
+useDynLib(sparsity,sparsity_readsvmlight)
+useDynLib(sparsity,sparsity_writesvmlight)

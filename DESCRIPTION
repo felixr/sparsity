@@ -1,0 +1,16 @@
+Package: sparsity
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2013-06-22
+Author: Who wrote it
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: More about what it does (maybe more than one line)
+License: What Licence is it under ?
+Depends:
+    Rcpp (>= 0.10.3),
+    RcppEigen (>= 0.3.1)
+LinkingTo: Rcpp, RcppEigen
+Collate:
+    'RcppExports.R'
+    'sparsity-io.R'
