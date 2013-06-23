@@ -4,7 +4,7 @@
 #' @param labelVector 
 #' @param file 
 #' @export
-#' @useDynLib sparsity sparsity_writesvmlight 
+#' @useDynLib sparsity sparsity_writeSvmLight 
 write.svmlight <- function(sparseMatrix, labelVector, file) {
     if (!inherits(sparseMatrix, "dgCMatrix")) {
         stop("Matrix should have type dgCMatrix")
@@ -20,7 +20,7 @@ write.svmlight <- function(sparseMatrix, labelVector, file) {
 #'
 #'
 #' @export 
-#' @useDynLib sparsity sparsity_readsvmlight  
+#' @useDynLib sparsity sparsity_readSvmLight  
 read.svmlight <- function(file) {
     if (!file.exists(file)) {
         stop("File does not exist.")
