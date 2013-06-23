@@ -7,24 +7,24 @@
 using namespace Rcpp;
 
 // readSvmLight
-SEXP readSvmLight(SEXP fname);
-RcppExport SEXP sparsity_readSvmLight(SEXP fnameSEXP) {
+List readSvmLight(std::string filename);
+RcppExport SEXP sparsity_readSvmLight(SEXP filenameSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope __rngScope;
-    SEXP fname = Rcpp::as<SEXP >(fnameSEXP);
-    SEXP __result = readSvmLight(fname);
+    std::string filename = Rcpp::as<std::string >(filenameSEXP);
+    List __result = readSvmLight(filename);
     return Rcpp::wrap(__result);
 END_RCPP
 }
 // writeSvmLight
-SEXP writeSvmLight(SEXP sparseMatrix, SEXP labelVector, SEXP fname);
-RcppExport SEXP sparsity_writeSvmLight(SEXP sparseMatrixSEXP, SEXP labelVectorSEXP, SEXP fnameSEXP) {
+List writeSvmLight(Eigen::MappedSparseMatrix<double> inputMatrix, NumericVector labels, std::string fileName);
+RcppExport SEXP sparsity_writeSvmLight(SEXP inputMatrixSEXP, SEXP labelsSEXP, SEXP fileNameSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope __rngScope;
-    SEXP sparseMatrix = Rcpp::as<SEXP >(sparseMatrixSEXP);
-    SEXP labelVector = Rcpp::as<SEXP >(labelVectorSEXP);
-    SEXP fname = Rcpp::as<SEXP >(fnameSEXP);
-    SEXP __result = writeSvmLight(sparseMatrix, labelVector, fname);
+    Eigen::MappedSparseMatrix<double> inputMatrix = Rcpp::as<Eigen::MappedSparseMatrix<double> >(inputMatrixSEXP);
+    NumericVector labels = Rcpp::as<NumericVector >(labelsSEXP);
+    std::string fileName = Rcpp::as<std::string >(fileNameSEXP);
+    List __result = writeSvmLight(inputMatrix, labels, fileName);
     return Rcpp::wrap(__result);
 END_RCPP
 }
