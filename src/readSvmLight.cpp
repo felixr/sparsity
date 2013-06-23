@@ -13,8 +13,11 @@
 
 using namespace Rcpp;
 
+//' Reads a sparse matrix from a SVMlight compatible file
+//' @param fileName input file name
+//' @return list with a sparse matrix and a list of labels
 // [[Rcpp::export]]
-SEXP readSvmLight(SEXP fname){
+List readSvmLight(std::string filename){
     typedef Eigen::Triplet<double> Triplet; 
     typedef Eigen::SparseMatrix<double> SpCMat;
     typedef Eigen::SparseMatrix<double, Eigen::RowMajor> SpRMat;
@@ -25,8 +28,7 @@ SEXP readSvmLight(SEXP fname){
     triplets->reserve(100000);
     targetValues.reserve(50000);
 
-    std::string matrixfile(Rcpp::as<std::string>(fname));
-    std::ifstream inputFile(matrixfile.c_str());
+    std::ifstream inputFile(filename.c_str());
     std::string line;
     int nrow = 0;
     int ncol = 0;
