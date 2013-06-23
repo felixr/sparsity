@@ -6,29 +6,31 @@
 
 using namespace Rcpp;
 
+//' Writes a sparse matrix to a SVMlight compatible file
+//'
+//' @param inputMatrix sparse matrix
+//' @param labels list of numeric labels for each row in the matrix 
+//' @param fileName  output file name
+//' @return list with debug information
 // [[Rcpp::export]]
-SEXP writeSvmLight(SEXP sparseMatrix, SEXP labelVector, SEXP fname){
+List writeSvmLight(Eigen::MappedSparseMatrix<double> inputMatrix, 
+                        NumericVector labels, std::string fileName){
     typedef Eigen::MappedSparseMatrix<double> SpCMat;
     typedef Eigen::SparseMatrix<double, Eigen::RowMajor> SpRMat;
     typedef Eigen::Triplet<double> Triplet; 
 
-    SpCMat X(Rcpp::as<SpCMat>(sparseMatrix));
-    std::string fileName(as<std::string>(fname));
-    NumericVector labels(as<NumericVector>(labelVector));
-
     std::vector<Triplet> triplets;
-    triplets.reserve(X.nonZeros());
-
+    triplets.reserve(inputMatrix.nonZeros());
 
     // create list of triplets
-    for (int k=0; k < X.outerSize(); ++k) { // foreach col
-        for (SpCMat::InnerIterator it(X,k); it; ++it) { // foreach row
+    for (int k=0; k < inputMatrix.outerSize(); ++k) { // foreach col
+        for (SpCMat::InnerIterator it(inputMatrix,k); it; ++it) { // foreach row
             triplets.push_back(Triplet(it.row(), it.col(), it.value()));
         }
     }
 
     // create sparse matrix with RowMajor
-    SpRMat Y(X.rows(), X.cols());
+    SpRMat Y(inputMatrix.rows(), inputMatrix.cols());
     Y.setFromTriplets(triplets.begin(), triplets.end());
 
     // open output file
