@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <assert.h>
 #include <locale.h>
 #include "linear.h"
 #include "tron.h"
@@ -835,6 +836,8 @@ static void solve_l2r_l1l2_svc(
 		{
 			double val = xi->value;
 			QD[i] += val*val;
+            assert(xi->index - 1 < prob->n);
+            assert(xi->index >= 1);
 			w[xi->index-1] += y[i]*alpha[i]*val;
 			xi++;
 		}
