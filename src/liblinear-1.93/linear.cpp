@@ -20,6 +20,7 @@ template <class S, class T> static inline void clone(T*& dst, S* src, int n)
 	dst = new T[n];
 	memcpy((void *)dst,(void *)src,sizeof(T)*n);
 }
+
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define INF HUGE_VAL
 
@@ -2256,7 +2257,7 @@ static void train_one(const problem *prob, const parameter *param, double *w, do
 			tron_obj.set_print_string(liblinear_print_string);
 			tron_obj.tron(w);
 			delete fun_obj;
-			delete C;
+			delete[] C;
 			break;
 
 		}
@@ -2282,6 +2283,7 @@ model* train(const problem *prob, const parameter *param)
 	int n = prob->n;
 	int w_size = prob->n;
 	model *model_ = Malloc(model,1);
+    model_->w = NULL;
 
 	if(prob->bias>=0)
 		model_->nr_feature=n-1;
@@ -2359,7 +2361,7 @@ model* train(const problem *prob, const parameter *param)
 		{
 			if(nr_class == 2)
 			{
-				model_->w=Malloc(double, w_size);
+				model_->w = Malloc(double, w_size);
 
 				int e0 = start[0]+count[0];
 				k=0;

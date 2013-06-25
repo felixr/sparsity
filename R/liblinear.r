@@ -18,23 +18,61 @@ modelDescriptions <- function(type=NA) {
     }
 }
 
-#' @useDynLib sparsity sparsity_liblinearTrain 
+
+#' Creates a LIBLINEAR problem data structure from a sparse matrix and labels.
+#'
+#' @useDynLib sparsity sparsity_createProblemInstance
 #' @export
-liblinear <- function(inputMatrix, labels, solver_type=5, cost=1, epsilon=0.001) {
-    model = .Call('sparsity_liblinearTrain', PACKAGE = 'sparsity', inputMatrix, labels, solver_type, cost, epsilon)
+liblinear.new <- function(inputMatrix, labels) {
+    p = .Call('sparsity_createProblemInstance', PACKAGE = 'sparsity', inputMatrix, labels)
+    class(p) <- "liblinearProblem"
+    p
+}
+#' Trains a model using LIBLINEAR
+#'
+#' @export
+liblinear <- function(data, labels=NULL, solver_type=5, cost=1, epsilon=0.001) {
+    UseMethod("liblinear", data)
+}
+
+#' Trains a model using LIBLINEAR
+#' 
+#' @method liblinear liblinearProblem 
+#' @S3method liblinear liblinearProblem 
+#' @useDynLib sparsity sparsity_liblinearTrain 
+liblinear.liblinearProblem <- function(data, labels, solver_type=5, cost=1, epsilon=0.001, quiet=FALSE) {
+    model = .Call('sparsity_liblinearTrain', PACKAGE = 'sparsity', 
+                  data, solver_type, cost, epsilon, quiet)
+
     class(model) <- "liblinear"
     model
 }
 
-#'
-predict.liblinear <- function(fit, newdata) {
-    if (dim(newdata)[2] != fit$nr_features) {
-        stop(paste0("Input data has wrong dimension. Expected columns: ",
-                    fit$nr_features, " Given columns:", ncol(newdata)))
-    }
-    newdata %*% matrix(fit$w)
+#' @method liblinear dgCMatrix
+#' @S3method liblinear dgCMatrix
+#' @useDynLib sparsity sparsity_liblinearTrain 
+liblinear.dgCMatrix <- function(data, labels, solver_type=5, cost=1, epsilon=0.001, quiet=FALSE) {
+    problem = liblinear.new(data, labels)
+    model = .Call('sparsity_liblinearTrain', PACKAGE = 'sparsity', problem, solver_type, cost, epsilon, quiet)
+    rm(problem)
+    class(model) <- "liblinear"
+    model
 }
 
+#' @method predict liblinear 
+#' @S3method predict liblinear 
+predict.liblinear <- function(fit, newdata) {
+    if (dim(newdata)[2] != fit$nr_features) {
+        warning(paste0("Input data has wrong dimension. Expected columns: ",
+                    fit$nr_features, " Given columns:", ncol(newdata)))
+        newdata[,1:fit$nr_features] %*% matrix(fit$w)
+    }else{
+        newdata %*% matrix(fit$w)
+    }
+}
+
+#' @method print liblinear 
+#' @S3method print liblinear 
 print.liblinear <- function(obj) {
     cat("---------------\n")
     cat("LIBLINEAR model","\n")

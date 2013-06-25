@@ -6,6 +6,31 @@
 
 using namespace Rcpp;
 
+// createProblemInstance
+SEXP createProblemInstance(Eigen::MappedSparseMatrix<double> inputMatrix, std::vector<double> labels);
+RcppExport SEXP sparsity_createProblemInstance(SEXP inputMatrixSEXP, SEXP labelsSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope __rngScope;
+    Eigen::MappedSparseMatrix<double> inputMatrix = Rcpp::as<Eigen::MappedSparseMatrix<double> >(inputMatrixSEXP);
+    std::vector<double> labels = Rcpp::as<std::vector<double> >(labelsSEXP);
+    SEXP __result = createProblemInstance(inputMatrix, labels);
+    return Rcpp::wrap(__result);
+END_RCPP
+}
+// liblinearTrain
+List liblinearTrain(SEXP problemPtr, int solver_type, double cost, double epsilon, bool quiet);
+RcppExport SEXP sparsity_liblinearTrain(SEXP problemPtrSEXP, SEXP solver_typeSEXP, SEXP costSEXP, SEXP epsilonSEXP, SEXP quietSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope __rngScope;
+    SEXP problemPtr = Rcpp::as<SEXP >(problemPtrSEXP);
+    int solver_type = Rcpp::as<int >(solver_typeSEXP);
+    double cost = Rcpp::as<double >(costSEXP);
+    double epsilon = Rcpp::as<double >(epsilonSEXP);
+    bool quiet = Rcpp::as<bool >(quietSEXP);
+    List __result = liblinearTrain(problemPtr, solver_type, cost, epsilon, quiet);
+    return Rcpp::wrap(__result);
+END_RCPP
+}
 // readSvmLight
 List readSvmLight(std::string filename);
 RcppExport SEXP sparsity_readSvmLight(SEXP filenameSEXP) {
