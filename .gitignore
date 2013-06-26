@@ -3,3 +3,10 @@
 
 # Example code in package build process
 *-Ex.R
+
+*.tar.gz
+
+*.o
+*.so
+
+.*.sw[po]

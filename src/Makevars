@@ -1,3 +1,4 @@
+# vim: ft=make:
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
 
@@ -25,3 +26,15 @@ PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
 ## comfortable with autoconf and its related tools.
 
 
+LIBLINEAR=liblinear-1.93
+LIBLINEAR_OBJECTS=$(LIBLINEAR)/linear.o $(LIBLINEAR)/tron.o $(LIBLINEAR)/blas/blas.a
+PKG_LIBS+=${LIBLINEAR_OBJECTS} 
+
+all: $(SHLIB)
+
+liblinear:
+	(cd $(LIBLINEAR); make linear.o tron.o blas/blas.a)
+
+$(SHLIB): liblinear
+
+.PHONY: liblinear
