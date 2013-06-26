@@ -31,7 +31,7 @@ liblinear.new <- function(inputMatrix, labels) {
 #' Trains a model using LIBLINEAR
 #'
 #' @export
-liblinear <- function(data, labels=NULL, solver_type=5, cost=1, epsilon=0.001) {
+liblinear <- function(data, labels=NULL, solver_type=5, cost=1, epsilon=0.001, ...) {
     UseMethod("liblinear", data)
 }
 
@@ -63,8 +63,7 @@ liblinear.dgCMatrix <- function(data, labels, solver_type=5, cost=1, epsilon=0.0
 #' @S3method predict liblinear 
 predict.liblinear <- function(fit, newdata) {
     if (dim(newdata)[2] != fit$nr_features) {
-        warning(paste0("Input data has wrong dimension. Expected columns: ",
-                    fit$nr_features, " Given columns:", ncol(newdata)))
+        # warning(paste0("Input data has wrong dimension. Expected columns: ", fit$nr_features, " Given columns:", ncol(newdata)))
         newdata[,1:fit$nr_features] %*% matrix(fit$w)
     }else{
         newdata %*% matrix(fit$w)
